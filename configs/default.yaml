@@ -1,0 +1,100 @@
+# Configuration for adversarial debiasing pipeline
+# Hyperparameters from thesis Table 9
+
+model:
+  encoder: "answerdotai/ModernBERT-base"
+  hidden_size: 768
+  max_length: 256
+  dropout: 0.4
+  
+  # Job classifier: 768 → 2
+  job_classifier:
+    num_classes: 2
+  
+  # Gender classifier: 768 → 256 → 2
+  gender_classifier:
+    hidden_dim: 256
+    num_classes: 2
+  
+  # Probe classifier: 768 → 64 → 2
+  probe:
+    hidden_dim: 64
+    num_classes: 2
+
+data:
+  train_path: "data/processed/train.csv"
+  test_path: "data/processed/test.csv"
+  batch_size: 32
+  num_workers: 0
+
+# Phase 1: Baseline establishment (from Phase 2 transfer learning)
+baseline:
+  frozen_epochs: 2
+  frozen_lr: 3e-4
+  frozen_weight_decay: 0.02
+  
+  unfrozen_epochs: 5
+  unfrozen_lr: 8e-6
+  unfrozen_weight_decay: 0.02
+
+# Phase 2: Adversary pre-training
+adversary_pretrain:
+  epochs: 10
+  learning_rate: 1e-3
+  weight_decay: 0.01
+  batch_size: 32
+
+# Phase 3: Lambda optimization
+lambda_optimization:
+  epochs: 6
+  batch_size: 16
+  lambdas: [0.1, 0.5, 1.0, 2.0, 5.0]
+  bert_lr: 5e-6
+  gender_lr: 5e-4
+  weight_decay: 0.02
+  
+  # Selection criterion weights
+  job_weight: 0.6
+  fairness_weight: 0.4
+
+# Phase 4: Final adversarial training
+adversarial_training:
+  epochs: 15
+  batch_size: 32
+  bert_lr: 5e-6
+  gender_lr: 5e-4
+  weight_decay: 0.02
+  optimal_lambda: 2.0  # From thesis results
+  progressive_scheduling: true
+
+# Phase 5a: Extended baseline
+extended_baseline:
+  epochs: 15
+  learning_rate: 1e-6
+  weight_decay: 0.1
+  batch_size: 32
+
+# Phase 5b: Probe classifier
+probe_training:
+  epochs: 15
+  learning_rate: 1e-4
+  batch_size: 32
+
+# Expected results (from thesis)
+expected_results:
+  baseline:
+    job_accuracy: 0.6488
+    job_f1: 0.6443
+    gender_accuracy: 0.6310
+    demographic_parity: 0.0147
+  
+  adversarial:
+    job_accuracy: 0.6369
+    job_f1: 0.6287
+    gender_accuracy: 0.5119
+    demographic_parity: 0.0060
+  
+  improvements:
+    job_f1_retained: 0.976  # 97.6% of baseline
+    gender_reduction: 0.189  # 18.9% reduction
+    parity_reduction: 0.59   # 59% reduction
