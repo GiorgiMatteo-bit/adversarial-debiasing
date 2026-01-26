@@ -27,6 +27,8 @@ This code uses adversarial training to force the model to "forget" gender while 
 3. **Stage 3: Lambda Optimization** - Grid search over $\lambda \in \{0.1, 0.5, 1.0, 2.0, 5.0\}$ to find the sweet spot. Optimal: $\lambda=2.0$.
 4. **Stage 4: Adversarial Training** - Full training with Gradient Reversal Layer.
 
+<img src="assets/image1.png" width="600" alt="Model architecture">
+
 ## Core Components
 
 ```text
@@ -82,6 +84,8 @@ pip install -r requirements.txt
 python scripts/train.py
 ```
 This runs all 4 stages sequentially. Hyperparameters are in `configs/default.yaml`
+
+<img src="assets/image2.png" width="600" alt="Model architecture">
 
 ---
 
