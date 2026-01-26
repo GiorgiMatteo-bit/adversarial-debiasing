@@ -1,6 +1,10 @@
 # Adversarial Debiasing for Fair Resume Screening
 **Master's Thesis Project 2025**
 
+[![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Thesis](https://img.shields.io/badge/thesis-PDF-red.svg)](Master_Thesis_MG.pdf)
+
 Removing gender bias from AI resume screening while keeping the system accurate. This repository contains the adversarial training implementation (Phase 3) from my thesis on fairness in ICT hiring algorithms.
 
 > [!NOTE]
@@ -68,7 +72,7 @@ id,full_text_english,gender,ict_label
 * `gender`: 0=Female, 1=Male (binary only in this implementation)
 * `ict_label`: 0=Non-ICT, 1=ICT
 
-See `data/DATA_FORMAT.md` for detailed specifications.
+See `data_format.md` for detailed specifications.
 
 * Installation and Training
 
