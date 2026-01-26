@@ -4,7 +4,7 @@
 Removing gender bias from AI resume screening while keeping the system accurate. This repository contains the adversarial training implementation (Phase 3) from my thesis on fairness in ICT hiring algorithms.
 
 > [!NOTE]
-> **The Full Thesis:** You can read the complete research and methodology in the [Final_Master_Thesis_Matteo_Giorgi.pdf](./Final_Master_Thesis_Matteo_Giorgi.pdf).
+> **The Full Thesis:** You can read the complete research and methodology in the [Master_Thesis_MG.pdf](./Master_Thesis_MG.pdf).
 
 ## About This Project
 AI resume screeners learn bias from historical data. Even after removing names and obvious gender markers, these systems can still infer gender from writing style, career gaps, and job terminology - then use that information to make biased decisions.
@@ -96,7 +96,7 @@ The model learns representations that genuinely don't contain gender information
 ---
 
 ## Technical Details
-The thesis `(Final_Master_Thesis_Matteo_Giorgi.pdf)` contains in-depth explanations of:
+The thesis [Master_Thesis_MG.pdf](./Master_Thesis_MG.pdf) contains in-depth explanations of:
 
 * Gradient Reversal Layer mathematics
 * Why ModernBERT over other encoders
