@@ -11,7 +11,7 @@ This repository contains the adversarial training implementation (Phase 3) from 
 ## About This Project
 AI resume screeners learn bias from historical data. Even after removing names and obvious gender markers, these systems can still infer gender from writing style, career gaps, and job terminology - then use that information to make biased decisions.
 
-**This code implements adversarial training between a gender predictor NN and a resume classifier created from ModernBERT. The architecture uses a Gradient Reversal Layer to force competing gradients during backpropagation. The intensity of the debiasing gradient is regulated by a constant λ, optimization via grid search.
+**This code implements adversarial training between a gender predictor NN and a resume classifier created from ModernBERT. The architecture uses a Gradient Reversal Layer to force competing gradients during backpropagation. The intensity of the debiasing gradient is regulated by a constant λ, optimized via grid search.
 After training the transformer classifier learns job predictions that are uninformative for the adversary gender detector, creating representations that don't encode protected attributes**
 **Results:** Gender predictability dropped from 63% to 51% (essentially random guessing) while maintaining 98% of classification performance. 
 
@@ -20,15 +20,46 @@ After training the transformer classifier learns job predictions that are uninfo
 
 ---
 
+## Running the Code
+
+1. **Clone the repository:**
+```code
+git clone https://github.com/GiorgiMatteo-bit/adversarial-debiasing.git
+cd adversarial-debiasing
+```
+2. **Set up the environment and Dataset:**
+>[!IMPORTANT] The dataset I have worked on is covered by NDA since it contains protected attributes (gender, ethnicity, age) matched with        real resume text. Therefore it cannot be uploaded in this repository.
+```code
+pip install -r requirements.txt
+
+**3. **Prepare your data:**
+
+    You'll need a resume dataset with binary gender labels. Format it following `data_format.md`
+    
+    Place processed files at:
+
+data/processed/train.csv
+data/processed/test.csv
+```
+4. **Run the 4-stage training pipeline:**
+```code
+python scripts/train.py
+```
+This runs all 4 stages sequentially. Hyperparameters are in `configs/default.yaml`
+
+---
+
 ## Architecture
 
 ### The 4-Stage Pipeline
-1. **Stage 1: Baseline** - Standard ICT classifier (ModernBERT encoder + linear classifier). Establishes performance ceiling before debiasing.
-2. **Stage 2: Adversary Pre-training** - Train a gender classifier on frozen encoder features. Reaches ~68% accuracy on gender prediction.
+1. **Stage 1: Baseline** - Resume classifier (ModernBERT encoder + linear classifier). Establishes performance ceiling before debiasing.
+2. **Stage 2: Adversary Pre-training** - Train a gender classifier on frozen encoder features. 
 3. **Stage 3: Lambda Optimization** - Grid search over $\lambda \in \{0.1, 0.5, 1.0, 2.0, 5.0\}$ to find the sweet spot. Optimal: $\lambda=2.0$.
 4. **Stage 4: Adversarial Training** - Full training with Gradient Reversal Layer.
 
 <img src="assets/image1.png" width="600" alt="Model architecture">
+
+----
 
 ## Core Components
 
@@ -48,43 +79,7 @@ src/
     ├── metrics.py             # F1, demographic parity, etc.
     └── visualization.py       # Training curves, confusion matrices
 ```
-
-## Why No Dataset?
->[!IMPORTANT] The data contains protected attributes (gender, ethnicity, age) matched with real resume text. Publishing this would:
-
-* **Violate the data donation consent.**
-
-* **Risk re-identification despite anonymization (Phase 1 proved this is possible).** 
-
-* **Potentially enable training of discriminatory systems.**
-
-* **The European GDPR and AI Act have strict rules about processing special category data. This code respects that.**
-
 ---
-
-## Running the Code
-**Data Format**
-The code expects CSV files with this structure:
-
-```csv
-id,full_text_english,gender,ict_label
-1,"Software engineer with 5 years experience...",1,1
-2,"Administrative assistant with organizational skills...",0,0
-```
-* `full_text_english`: Complete resume text (preprocessed, no PII)
-* `gender`: 0=Female, 1=Male (binary only in this implementation)
-* `ict_label`: 0=Non-ICT, 1=ICT
-
-See `data_format.md` for detailed specifications.
-
-* Installation and Training
-
-```text
-pip install -r requirements.txt
-
-python scripts/train.py
-```
-This runs all 4 stages sequentially. Hyperparameters are in `configs/default.yaml`
 
 <img src="assets/image2.png" width="600" alt="Model architecture">
 
