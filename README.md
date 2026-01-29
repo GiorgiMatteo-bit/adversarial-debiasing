@@ -5,17 +5,18 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Thesis](https://img.shields.io/badge/thesis-PDF-red.svg)](Master_Thesis_MG.pdf)
 
-Removing gender bias from AI resume screening while keeping the system accurate. This repository contains the adversarial training implementation (Phase 3) from my thesis on fairness in ICT hiring algorithms.
+This repository contains the adversarial training implementation (Phase 3) from my thesis on fairness in transformers-based hiring algorithms.
 
-> [!NOTE]
-> **The Full Thesis:** You can read the complete research and methodology in the [Master_Thesis_MG.pdf](./Master_Thesis_MG.pdf).
 
 ## About This Project
 AI resume screeners learn bias from historical data. Even after removing names and obvious gender markers, these systems can still infer gender from writing style, career gaps, and job terminology - then use that information to make biased decisions.
 
-This code uses adversarial training to force the model to "forget" gender while learning to classify ICT vs non-ICT positions. Think of it as training two neural networks against each other: one tries to predict jobs, the other tries to detect gender. The job predictor learns to ignore any features the gender detector can exploit.
+**This code implements adversarial training between a gender predictor NN and a resume classifier created from ModernBERT. The architecture uses a Gradient Reversal Layer to force competing gradients during backpropagation. The intensity of the debiasing gradient is regulated by a constant λ, optimization via grid search.
+After training the transformer classifier learns job predictions that are uninformative for the adversary gender detector, creating representations that don't encode protected attributes**
+**Results:** Gender predictability dropped from 63% to 51% (essentially random guessing) while maintaining 98% of classification performance. 
 
-**Results:** Gender predictability dropped from 63% to 51% (essentially random guessing) while maintaining 98% of classification performance. Demographic parity improved by 59%.
+> [!NOTE]
+> **The Full Thesis:** You can read the complete research and methodology in the [Master_Thesis_MG.pdf](./Master_Thesis_MG.pdf).
 
 ---
 
